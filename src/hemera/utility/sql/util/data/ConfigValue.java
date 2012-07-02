@@ -2,10 +2,9 @@ package hemera.utility.sql.util.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import hemera.core.utility.config.TimeData;
+import hemera.core.utility.data.TimeData;
 import hemera.utility.sql.enumn.ESign;
 import hemera.utility.sql.query.result.SelectQuery;
 
@@ -148,10 +147,7 @@ public class ConfigValue {
 	 */
 	public TimeData getTimeValue() {
 		final String value = this.getStringValue();
-		final String[] array = value.split(" ");
-		final Long time = Long.valueOf(array[0]);
-		final TimeUnit unit = TimeUnit.valueOf(array[1]);
-		return new TimeData(time, unit);
+		return new TimeData(value);
 	}
 
 	/**
