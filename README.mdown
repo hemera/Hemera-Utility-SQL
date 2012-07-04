@@ -1,17 +1,21 @@
-# Hemera Engine - Utility SQL
+# Hemera
+Created by **Yi Wang (Neakor, hemera)**
 
-Created by **Yi Wang (hemera)**
+**Please note that this is one of the building blocks of the Hemera
+Application Platform. Please refer to [Hemera-Release](https://github.com/hemera/Hemera-Release)
+for the complete stable releases and [documentation](https://github.com/hemera/Hemera-Release/wiki).**
 
-**Hemera Engine - Utility SQL** TODO
+# Hemera - Utility SQL
 
-# Documentation
-TODO
+**Hemera - Utility SQL** provides a set of SQL related utility units that can
+be used in various applications for convenient SQL operations. All the units
+provided utilize prepared statements to ensure security and performance.
 
 # License
 
-**Hemera Engine - Utility SQL** is available under the MIT license:
+**Hemera - Utility SQL** is available under the MIT license:
 
-*Copyright (c) 2012 Yi Wang (hemera)*
+*Copyright (c) 2012 Yi Wang (Neakor, hemera)*
 
 *Permission is hereby granted, free of charge, to any person obtaining a copy*
 *of this software and associated documentation files (the "Software"), to deal*
