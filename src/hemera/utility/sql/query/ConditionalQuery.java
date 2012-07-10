@@ -38,8 +38,11 @@ public abstract class ConditionalQuery extends AbstractQuery {
 	
 	/**
 	 * Constructor of <code>ConditionalQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
 	 */
-	protected ConditionalQuery() {
+	protected ConditionalQuery(final String key) {
+		super(key);
 		this.conditions = new ArrayList<AbstractCondition>();
 		this.relations = new ArrayList<ERelation>();
 	}

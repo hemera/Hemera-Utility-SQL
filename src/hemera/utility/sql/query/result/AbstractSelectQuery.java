@@ -8,7 +8,6 @@ import java.util.List;
 
 import hemera.utility.sql.enumn.EOrder;
 import hemera.utility.sql.enumn.ERelation;
-import hemera.utility.sql.enumn.ESQLConfig;
 import hemera.utility.sql.enumn.ESign;
 import hemera.utility.sql.interfaces.IResultsQuery;
 import hemera.utility.sql.query.ConditionalQuery;
@@ -61,8 +60,11 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 
 	/**
 	 * Constructor of <code>AbstractSelectQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
 	 */
-	protected AbstractSelectQuery() {
+	protected AbstractSelectQuery(final String key) {
+		super(key);
 		this.tables = new ArrayList<String>();
 	}
 
@@ -187,7 +189,7 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 		final int tlast = tsize - 1;
 		for (int i = 0; i < tsize; i++) {
 			final String table = this.tables.get(i);
-			builder.append("`").append(ESQLConfig.Database_DBName.value()).append("`.");
+			builder.append("`").append(this.source.dbName).append("`.");
 			builder.append("`").append(table).append("`");
 			if (i != tlast) builder.append(",");
 		}

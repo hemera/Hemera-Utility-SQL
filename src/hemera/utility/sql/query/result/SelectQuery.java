@@ -29,8 +29,11 @@ public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 
 	/**
 	 * Constructor of <code>SelectQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
 	 */
-	public SelectQuery() {
+	public SelectQuery(final String key) {
+		super(key);
 		this.resultcolumns = new ArrayList<TableColumn>();
 	}
 

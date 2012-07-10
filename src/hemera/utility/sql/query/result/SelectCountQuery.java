@@ -12,6 +12,15 @@ import java.sql.SQLException;
  */
 public class SelectCountQuery extends AbstractSelectQuery {
 	
+	/**
+	 * Constructor of <code>SelectCountQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
+	 */
+	public SelectCountQuery(final String key) {
+		super(key);
+	}
+	
 	@Override
 	protected String buildResultTemplate() {
 		return "count(*)";

@@ -5,7 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import hemera.utility.sql.SQLDataSource;
+import hemera.utility.sql.SQLSource;
+import hemera.utility.sql.SQLSourceManager;
 import hemera.utility.sql.interfaces.IQuery;
 
 /**
@@ -34,9 +35,18 @@ import hemera.utility.sql.interfaces.IQuery;
  */
 public abstract class AbstractQuery implements IQuery {
 	/**
+	 * The <code>String</code> key used to identify
+	 * the data source.
+	 */
+	protected final String key;
+	/**
 	 * The <code>AtomicInteger</code> of retry count.
 	 */
 	protected final AtomicInteger retryCount;
+	/**
+	 * The <code>SQLSource</code> instance.
+	 */
+	protected SQLSource source;
 	/**
 	 * The <code>Connection</code> resource.
 	 */
@@ -48,15 +58,19 @@ public abstract class AbstractQuery implements IQuery {
 	
 	/**
 	 * Constructor of <code>AbstractQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
 	 */
-	protected AbstractQuery() {
+	protected AbstractQuery(final String key) {
+		this.key = key;
 		this.retryCount = new AtomicInteger();
 	}
 
 	@Override
 	public PreparedStatement prepareStatement() throws SQLException {
 		final String template = this.buildTemplate();
-		this.connection = SQLDataSource.instance.getConnection();
+		this.source = SQLSourceManager.instance.getSource(this.key);
+		this.connection = this.source.datasource.getConnection();
 		this.statement = this.connection.prepareStatement(template);
 		this.insertValues(this.statement);
 		return this.statement;

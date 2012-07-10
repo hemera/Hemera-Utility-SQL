@@ -27,6 +27,10 @@ import hemera.utility.sql.query.result.SelectQuery;
  */
 public class ConfigValue {
 	/**
+	 * The <code>String</code> source key.
+	 */
+	private final String sourceKey;
+	/**
 	 * The <code>String</code> configuration table
 	 * name.
 	 */
@@ -54,6 +58,8 @@ public class ConfigValue {
 
 	/**
 	 * Constructor of <code>AbstractConfig</code>.
+	 * @param sourceKey The <code>String</code> key used
+	 * to identify the data source.
 	 * @param table The <code>String</code> table name.
 	 * @param keycol The <code>String</code> key column
 	 * name.
@@ -62,7 +68,8 @@ public class ConfigValue {
 	 * @param key The <code>String</code> key column
 	 * for the configuration value.
 	 */
-	public ConfigValue(final String table, final String keycol, final String valuecol, final String key) {
+	public ConfigValue(final String sourceKey, final String table, final String keycol, final String valuecol, final String key) {
+		this.sourceKey = sourceKey;
 		this.table = table;
 		this.keycol = keycol;
 		this.valuecol = valuecol;
@@ -248,7 +255,7 @@ public class ConfigValue {
 	 * @return The <code>SelectQuery</code> instance.
 	 */
 	private SelectQuery newSelectQuery() {
-		final SelectQuery query = new SelectQuery();
+		final SelectQuery query = new SelectQuery(this.sourceKey);
 		query.addResultColumn(this.table, this.valuecol);
 		query.addCondition(this.table, this.keycol, this.key, ESign.Equal, null);
 		return query;

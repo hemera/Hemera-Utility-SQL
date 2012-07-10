@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import hemera.utility.sql.enumn.ESQLConfig;
 import hemera.utility.sql.interfaces.IModifyQuery;
 import hemera.utility.sql.query.AbstractQuery;
 import hemera.utility.sql.util.QueryExecutor;
@@ -39,10 +38,13 @@ public class InsertQuery extends AbstractQuery implements IModifyQuery {
 
 	/**
 	 * Constructor of <code>InsertQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
 	 * @param tablename The <code>String</code> name of
 	 * the table.
 	 */
-	public InsertQuery(final String tablename) {
+	public InsertQuery(final String key, final String tablename) {
+		super(key);
 		this.tablename = tablename;
 		this.data = new ArrayList<ColumnValue>();
 	}
@@ -116,7 +118,7 @@ public class InsertQuery extends AbstractQuery implements IModifyQuery {
 	protected String buildTemplate() {
 		final StringBuilder builder = new StringBuilder();
 		// Header.
-		builder.append("insert into `").append(ESQLConfig.Database_DBName.value()).append("`");
+		builder.append("insert into `").append(this.source.dbName).append("`");
 		builder.append(".`").append(this.tablename).append("` ");
 		// All columns.
 		builder.append("(");

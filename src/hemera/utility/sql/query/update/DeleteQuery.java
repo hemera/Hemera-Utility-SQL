@@ -3,7 +3,6 @@ package hemera.utility.sql.query.update;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import hemera.utility.sql.enumn.ESQLConfig;
 import hemera.utility.sql.interfaces.IModifyQuery;
 import hemera.utility.sql.query.ConditionalQuery;
 import hemera.utility.sql.util.QueryExecutor;
@@ -26,10 +25,13 @@ public class DeleteQuery extends ConditionalQuery implements IModifyQuery {
 
 	/**
 	 * Constructor of <code>DeleteQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
 	 * @param tablename The <code>String</code> name of
 	 * the table.
 	 */
-	public DeleteQuery(final String tablename) {
+	public DeleteQuery(final String key, final String tablename) {
+		super(key);
 		this.tablename = tablename;
 	}
 	
@@ -42,7 +44,7 @@ public class DeleteQuery extends ConditionalQuery implements IModifyQuery {
 	protected String buildTemplate() {
 		final StringBuilder builder = new StringBuilder();
 		// Header.
-		builder.append("delete from `").append(ESQLConfig.Database_DBName.value()).append("`");
+		builder.append("delete from `").append(this.source.dbName).append("`");
 		builder.append(".`").append(this.tablename).append("` ");
 		// Conditions.
 		final String conditions = this.buildConditionsTemplate();

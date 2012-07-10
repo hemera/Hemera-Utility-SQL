@@ -21,13 +21,15 @@ public class SelectMaxQuery extends AbstractSelectQuery {
 	
 	/**
 	 * Constructor of <code>SelectMaxQuery</code>.
+	 * @param key The <code>String</code> key used to
+	 * identify the data source.
 	 * @param table The <code>String</code> name of
 	 * the table the column belongs.
 	 * @param column The <code>String</code> column
 	 * to select the maximum value of.
 	 */
-	public SelectMaxQuery(final String table, final String column) {
-		super();
+	public SelectMaxQuery(final String key, final String table, final String column) {
+		super(key);
 		if (!this.tables.contains(table)) {
 			this.tables.add(table);
 		}
