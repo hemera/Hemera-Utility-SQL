@@ -1,4 +1,7 @@
-package hemera.utility.sql.util.data;
+package hemera.utility.sql.data.value;
+
+
+import hemera.utility.sql.data.TableColumn;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,7 +34,8 @@ public abstract class ColumnValue extends TableColumn {
 	 * value at.
 	 * @param statement The <code>PreparedStatement</code>
 	 * based on the first stage template.
+	 * @return The <code>int</code> inserted count.
 	 * @throws SQLException If value insertion failed.
 	 */
-	public abstract void insertValue(final int index, final PreparedStatement statement) throws SQLException;
+	public abstract int insertValue(final int index, final PreparedStatement statement) throws SQLException;
 }

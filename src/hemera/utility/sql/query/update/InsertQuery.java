@@ -5,15 +5,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import hemera.utility.sql.data.value.BooleanColumnValue;
+import hemera.utility.sql.data.value.ColumnValue;
+import hemera.utility.sql.data.value.DoubleColumnValue;
+import hemera.utility.sql.data.value.EncryptColumnValue;
+import hemera.utility.sql.data.value.IntColumnValue;
+import hemera.utility.sql.data.value.LongColumnValue;
+import hemera.utility.sql.data.value.StringColumnValue;
 import hemera.utility.sql.interfaces.IModifyQuery;
 import hemera.utility.sql.query.AbstractQuery;
 import hemera.utility.sql.util.QueryExecutor;
-import hemera.utility.sql.util.data.BooleanColumnValue;
-import hemera.utility.sql.util.data.ColumnValue;
-import hemera.utility.sql.util.data.DoubleColumnValue;
-import hemera.utility.sql.util.data.IntColumnValue;
-import hemera.utility.sql.util.data.LongColumnValue;
-import hemera.utility.sql.util.data.StringColumnValue;
 
 /**
  * <code>InsertQuery</code> defines the implementation
@@ -109,6 +110,20 @@ public class InsertQuery extends AbstractQuery implements IModifyQuery {
 		this.data.add(new StringColumnValue(this.tablename, column, value));
 	}
 	
+	/**
+	 * Add the column-name value pair for the new row
+	 * to be inserted and encrypted with given key.
+	 * @param column The <code>String</code> column
+	 * name.
+	 * @param value The <code>String</code> value for
+	 * the column.
+	 * @param key The <code>String</code> encryption
+	 * key.
+	 */
+	public void addData(final String column, final String value, final String key) {
+		this.data.add(new EncryptColumnValue(this.tablename, column, value, key));
+	}
+	
 	@Override
 	public Integer execute() throws SQLException {
 		return QueryExecutor.instance.execute(this);
@@ -134,7 +149,12 @@ public class InsertQuery extends AbstractQuery implements IModifyQuery {
 		// Value place-holders.
 		builder.append("values (");
 		for (int i = 0; i < size; i++) {
-			builder.append("?");
+			final ColumnValue data = this.data.get(i);
+			if (data instanceof EncryptColumnValue) {
+				builder.append("AES_ENCRYPT(?, ?)");
+			} else {
+				builder.append("?");
+			}
 			if (i != last) builder.append(",");
 		}
 		builder.append(");");
@@ -144,9 +164,11 @@ public class InsertQuery extends AbstractQuery implements IModifyQuery {
 	@Override
 	protected void insertValues(final PreparedStatement statement) throws SQLException {
 		final int size = this.data.size();
+		int index = 1;
 		for (int i = 0; i < size; i++) {
 			final ColumnValue data = this.data.get(i);
-			data.insertValue(i+1, statement);
+			final int count = data.insertValue(index, statement);
+			index += count;
 		}
 	}
 }

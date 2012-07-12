@@ -1,5 +1,6 @@
 package hemera.utility.sql.query.result;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -35,5 +36,10 @@ public class SelectCountQuery extends AbstractSelectQuery {
 	public int getCountValue() throws SQLException {
 		if (this.resultset == null) return 0;
 		else return this.resultset.getInt(1);
+	}
+
+	@Override
+	protected int insertResultValues(final PreparedStatement statement) throws SQLException {
+		return 1;
 	}
 }

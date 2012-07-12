@@ -1,8 +1,9 @@
 package hemera.utility.sql.query.result;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import hemera.utility.sql.util.data.TableColumn;
+import hemera.utility.sql.data.TableColumn;
 
 /**
  * <code>SelectMaxQuery</code> defines the selection
@@ -57,5 +58,10 @@ public class SelectMaxQuery extends AbstractSelectQuery {
 	public int getMaxValue() throws SQLException {
 		if (this.resultset == null) return Integer.MIN_VALUE;
 		else return this.resultset.getInt(1);
+	}
+
+	@Override
+	protected int insertResultValues(final PreparedStatement statement) throws SQLException {
+		return 1;
 	}
 }

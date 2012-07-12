@@ -1,4 +1,4 @@
-package hemera.utility.sql.util.data;
+package hemera.utility.sql.data.value;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

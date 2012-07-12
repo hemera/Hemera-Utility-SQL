@@ -85,7 +85,7 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 	}
 
 	@Override
-	public final void addCondition(final String table, final String column, final boolean value, final ESign sign, final ERelation relation) {
+	public final void addCondition(final String table, final String column, final String value, final ESign sign, final ERelation relation) {
 		super.addCondition(table, column, value, sign, relation);
 		if (!this.tables.contains(table)) {
 			this.tables.add(table);
@@ -93,7 +93,15 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 	}
 
 	@Override
-	public final void addCondition(final String table, final String column, final String value, final ESign sign, final ERelation relation) {
+	public final void addRangeCondition(final String table, final String column, final int lower, final int higher, final ERelation relation) {
+		super.addRangeCondition(table, column, lower, higher, relation);
+		if (!this.tables.contains(table)) {
+			this.tables.add(table);
+		}
+	}
+
+	@Override
+	public final void addCondition(final String table, final String column, final boolean value, final ESign sign, final ERelation relation) {
 		super.addCondition(table, column, value, sign, relation);
 		if (!this.tables.contains(table)) {
 			this.tables.add(table);
@@ -107,19 +115,11 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 			this.tables.add(table);
 		}
 	}
-
+	
 	@Override
-	public final void addCondition(final String table, final String column, final int lower, final int higher, final ERelation relation) {
-		super.addCondition(table, column, lower, higher, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-
-	@Override
-	public final void addCondition(final String table1, final String column1, final String table2, final String column2,
+	public final void addJointCondition(final String table1, final String column1, final String table2, final String column2,
 			final ESign sign, final ERelation relation) {
-		super.addCondition(table1, column1, table2, column2, sign, relation);
+		super.addJointCondition(table1, column1, table2, column2, sign, relation);
 		if (!this.tables.contains(table1)) {
 			this.tables.add(table1);
 		}
@@ -129,9 +129,17 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 	}
 
 	@Override
-	public final void addCondition(final String table, final String latitudeCol, final String longitudeCol,
+	public void addEncryptionCondition(final String table, final String column, final String value, final String key, final ESign sign, final ERelation relation) {
+		super.addEncryptionCondition(table, column, value, key, sign, relation);
+		if (!this.tables.contains(table)) {
+			this.tables.add(table);
+		}
+	}
+
+	@Override
+	public final void addDistanceCondition(final String table, final String latitudeCol, final String longitudeCol,
 			final double latitude, final double longitude, final double distance, final ESign sign, final ERelation relation) {
-		super.addCondition(table, latitudeCol, longitudeCol, latitude, longitude, distance, sign, relation);
+		super.addDistanceCondition(table, latitudeCol, longitudeCol, latitude, longitude, distance, sign, relation);
 		if (!this.tables.contains(table)) {
 			this.tables.add(table);
 		}
@@ -220,6 +228,17 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 
 	@Override
 	protected final void insertValues(final PreparedStatement statement) throws SQLException {
-		this.insertConditionValues(statement, 1);
+		final int index = this.insertResultValues(statement);
+		this.insertConditionValues(statement, index);
 	}
+	
+	/**
+	 * Insert the result column necessary values.
+	 * @param statement The <code>PreparedStatement</code>
+	 * to insert into.
+	 * @return The <code>int</code> next index. If
+	 * no values are inserted, return <code>1</code>.
+	 * @throws SQLException If insertion failed.
+	 */
+	protected abstract int insertResultValues(final PreparedStatement statement) throws SQLException;
 }

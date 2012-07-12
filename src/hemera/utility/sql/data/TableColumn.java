@@ -1,4 +1,4 @@
-package hemera.utility.sql.util.data;
+package hemera.utility.sql.data;
 
 /**
  * <code>TableColumn</code> defines implementation of

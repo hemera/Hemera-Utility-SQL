@@ -1,4 +1,4 @@
-package hemera.utility.sql.util.data;
+package hemera.utility.sql.data.value;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,5 +31,7 @@ public final class DeltaValue extends ColumnValue {
 	}
 
 	@Override
-	public void insertValue(final int index, final PreparedStatement statement) throws SQLException {}
+	public int insertValue(final int index, final PreparedStatement statement) throws SQLException {
+		return 0;
+	}
 }

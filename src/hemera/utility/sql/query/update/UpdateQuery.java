@@ -5,16 +5,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import hemera.utility.sql.data.value.BooleanColumnValue;
+import hemera.utility.sql.data.value.ColumnValue;
+import hemera.utility.sql.data.value.DeltaValue;
+import hemera.utility.sql.data.value.DoubleColumnValue;
+import hemera.utility.sql.data.value.EncryptColumnValue;
+import hemera.utility.sql.data.value.IntColumnValue;
+import hemera.utility.sql.data.value.LongColumnValue;
+import hemera.utility.sql.data.value.StringColumnValue;
 import hemera.utility.sql.interfaces.IModifyQuery;
 import hemera.utility.sql.query.ConditionalQuery;
 import hemera.utility.sql.util.QueryExecutor;
-import hemera.utility.sql.util.data.BooleanColumnValue;
-import hemera.utility.sql.util.data.ColumnValue;
-import hemera.utility.sql.util.data.DeltaValue;
-import hemera.utility.sql.util.data.DoubleColumnValue;
-import hemera.utility.sql.util.data.IntColumnValue;
-import hemera.utility.sql.util.data.LongColumnValue;
-import hemera.utility.sql.util.data.StringColumnValue;
 
 /**
  * <code>UpdateQuery</code> defines the implementation
@@ -141,6 +142,8 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 				builder.append("`").append(data.table).append("`.");
 				builder.append("`").append(data.column).append("`");
 				builder.append("+").append(((DeltaValue)data).delta);
+			} else if (data instanceof EncryptColumnValue) {
+				builder.append("AES_ENCRYPT(?, ?)");
 			} else {
 				builder.append("?");
 			}
@@ -157,26 +160,25 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	@Override
 	protected void insertValues(final PreparedStatement statement) throws SQLException {
 		// This invocation order correlates to the template order.
-		final int count = this.insertSetValues(statement);
-		this.insertConditionValues(statement, count+1);
+		final int index = this.insertSetValues(statement);
+		this.insertConditionValues(statement, index);
 	}
 	
 	/**
 	 * Insert the values to be set.
 	 * @param statement The <code>PreparedStatement</code>
 	 * based on the first stage template.
-	 * @return The <code>int</code> number of values
-	 * inserted.
+	 * @return The <code>int</code> next index. If
+	 * no values are inserted, return <code>1</code>.
 	 * @throws SQLException If value insertion failed.
 	 */
 	private int insertSetValues(final PreparedStatement statement) throws SQLException {
 		final int size = this.data.size();
-		int index = 0;
+		int index = 1;
 		for (int i = 0; i < size; i++) {
 			final ColumnValue data = this.data.get(i);
-			if (data instanceof DeltaValue) continue;
-			data.insertValue(index+1, statement);
-			index++;
+			final int count = data.insertValue(index, statement);
+			index += count;
 		}
 		return index;
 	}

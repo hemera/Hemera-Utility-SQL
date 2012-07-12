@@ -6,34 +6,41 @@ import java.sql.SQLException;
 import hemera.utility.sql.enumn.ESign;
 
 /**
- * <code>PasswordCondition</code> defines the query
+ * <code>EncryptCondition</code> defines the query
  * single condition that holds a string value that
- * is encrypted using the PASSWORD algorithm.
+ * is encrypted using the AES algorithm.
  *
  * @author Yi Wang (Neakor)
  * @version 1.0.0
  */
-public final class PasswordCondition extends SingleCondition {
+public final class EncryptCondition extends SingleCondition {
 	/**
 	 * The <code>String</code> value to check against
 	 * the column.
 	 */
 	private final String value;
+	/**
+	 * The <code>String</code> key.
+	 */
+	private final String key;
 	
 	/**
-	 * Constructor of <code>PasswordCondition</code>.
+	 * Constructor of <code>EncryptCondition</code>.
 	 * @param table The <code>String</code> table to
 	 * check.
 	 * @param column The <code>String</code> name of
 	 * the column to test on.
 	 * @param value The <code>String</code> value for
 	 * the column to test with.
+	 * @param key The <code>String</code> encryption
+	 * key.
 	 * @param sign The <code>ESign</code> of this
 	 * condition.
 	 */
-	public PasswordCondition(final String table, final String column, final String value, final ESign sign) {
+	public EncryptCondition(final String table, final String column, final String value, final String key, final ESign sign) {
 		super(table, column, sign);
 		this.value = value;
+		this.key = key;
 	}
 	
 	@Override
@@ -41,13 +48,14 @@ public final class PasswordCondition extends SingleCondition {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("`").append(this.table).append("`.`").append(this.column).append("`");
 		builder.append(" ").append(this.sign.value).append(" ");
-		builder.append("password(?)");
+		builder.append("AES_ENCRYPT(?, ?)");
 		return builder.toString();
 	}
 	
 	@Override
 	public int insertValues(final PreparedStatement statement, final int start) throws SQLException {
 		statement.setString(start, this.value);
-		return 1;
+		statement.setString(start+1, this.key);
+		return 2;
 	}
 }

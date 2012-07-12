@@ -15,9 +15,13 @@ public class SQLSource {
 	 */
 	public final String key;
 	/**
-	 * The <code>String</code> IP address of the host.
+	 * The <code>String</code> address of the host.
 	 */
-	public final String ip;
+	public final String host;
+	/**
+	 * The <code>int</code> port of the host.
+	 */
+	public final int port;
 	/**
 	 * The <code>String</code> name of the database.
 	 */
@@ -31,24 +35,34 @@ public class SQLSource {
 	 * Constructor of <code>SQLSource</code>.
 	 * @param key The <code>String</code> key used to
 	 * identify the attached data source.
-	 * @param ip The <code>String</code> IP of the
-	 * host data source node.
+	 * @param host The <code>String</code> address of
+	 * the host.
+	 * @param port The <code>int</code> port of the
+	 * host to connect to.
 	 * @param dbName The <code>String</code> name of
 	 * the database.
+	 * @param dbUsername The <code>String</code> user
+	 * name used to login to the database.
+	 * @param dbPassword The <code>String</code> password
+	 * used to login to the database.
 	 */
-	SQLSource(final String key, final String ip, final String dbName) {
+	SQLSource(final String key, final String host, final int port, final String dbName,
+			final String dbUsername, final String dbPassword) {
 		this.key = key;
-		this.ip = ip;
+		this.host = host;
+		this.port = port;
 		this.dbName = dbName;
 		// Create database URL string.
 		final StringBuilder urlbuilder = new StringBuilder();
-		urlbuilder.append("jdbc:mysql://").append(ip).append("/").append(this.dbName);
+		urlbuilder.append("jdbc:mysql://").append(host).append(":").append(port).append("/").append(this.dbName);
 		final String url = urlbuilder.toString();
 		// Create data source.
 		final BasicDataSource datasource = new BasicDataSource();
 		datasource.setDriverClassName("com.mysql.jdbc.Driver");
 		datasource.setUrl(url);
 		datasource.setTestOnBorrow(true);
+		datasource.setUsername(dbUsername);
+		datasource.setPassword(dbPassword);
 		this.datasource = datasource;
 	}
 }

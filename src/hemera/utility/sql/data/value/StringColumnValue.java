@@ -1,4 +1,4 @@
-package hemera.utility.sql.util.data;
+package hemera.utility.sql.data.value;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,14 +10,14 @@ import java.sql.SQLException;
  * @author Yi Wang (Neakor)
  * @version 1.0.0
  */
-public final class StringColumnValue extends ColumnValue {
+public class StringColumnValue extends ColumnValue {
 	/**
 	 * The <code>String</code> value.
 	 */
-	private final String value;
+	protected final String value;
 	
 	/**
-	 * Constructor of <code>IntColumnValue</code>.
+	 * Constructor of <code>StringColumnValue</code>.
 	 * @param table The <code>String</code> name of
 	 * the table.
 	 * @param column The <code>String</code> name of
@@ -30,7 +30,8 @@ public final class StringColumnValue extends ColumnValue {
 	}
 
 	@Override
-	public void insertValue(final int index, final PreparedStatement statement) throws SQLException {
+	public int insertValue(final int index, final PreparedStatement statement) throws SQLException {
 		statement.setString(index, this.value);
+		return 1;
 	}
 }
