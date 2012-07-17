@@ -52,7 +52,7 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	}
 	
 	/**
-	 * Add the column-name value pair for to be set.
+	 * Add the column-name value pair to be set.
 	 * @param column The <code>String</code> column
 	 * name.
 	 * @param value The <code>int</code> value for
@@ -63,7 +63,7 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	}
 	
 	/**
-	 * Add the column-name value pair for to be set.
+	 * Add the column-name value pair to be set.
 	 * @param column The <code>String</code> column
 	 * name.
 	 * @param value The <code>long</code> value for
@@ -74,7 +74,7 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	}
 	
 	/**
-	 * Add the column-name value pair for to be set.
+	 * Add the column-name value pair to be set.
 	 * @param column The <code>String</code> column
 	 * name.
 	 * @param value The <code>double</code> value for
@@ -85,7 +85,7 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	}
 
 	/**
-	 * Add the column-name value pair for to be set.
+	 * Add the column-name value pair to be set.
 	 * @param column The <code>String</code> column
 	 * name.
 	 * @param value The <code>boolean</code> value for
@@ -96,7 +96,7 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	}
 	
 	/**
-	 * Add the column-name value pair for to be set.
+	 * Add the column-name value pair to be set.
 	 * @param column The <code>String</code> column
 	 * name.
 	 * @param value The <code>String</code> value for
@@ -106,6 +106,20 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 		this.data.add(new StringColumnValue(this.tablename, column, value));
 	}
 	
+	/**
+	 * Add the column-name value pair to be encrypted
+	 * with given key and set.
+	 * @param column The <code>String</code> column
+	 * name.
+	 * @param value The <code>String</code> value for
+	 * the column.
+	 * @param key The <code>String</code> encryption
+	 * key.
+	 */
+	public void addData(final String column, final String value, final String key) {
+		this.data.add(new EncryptColumnValue(this.tablename, column, value, key));
+	}
+
 	/**
 	 * Update the specified column by the delta integer
 	 * amount.
