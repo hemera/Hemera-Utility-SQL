@@ -8,6 +8,7 @@ import java.util.List;
 import hemera.utility.sql.condition.AbstractCondition;
 import hemera.utility.sql.condition.BooleanSingleCondition;
 import hemera.utility.sql.condition.DistanceCondition;
+import hemera.utility.sql.condition.DoubleSingleCondition;
 import hemera.utility.sql.condition.EncryptCondition;
 import hemera.utility.sql.condition.IntRangeCondition;
 import hemera.utility.sql.condition.IntSingleCondition;
@@ -126,6 +127,33 @@ public abstract class ConditionalQuery extends AbstractQuery {
 	 */
 	public void addCondition(final String table, final String column, final String value, final ESign sign, final ERelation relation) {
 		this.conditions.add(new StringSingleCondition(table, column, value, sign));
+		this.relations.add(relation);
+	}
+	
+	/**
+	 * Add a single test condition to test.
+	 * <p>
+	 * Given condition only affects the relation
+	 * between this condition and the next added one.
+	 * The last condition's relation is ignored.
+	 * <p>
+	 * This method does not provide any duplication
+	 * check. It is the caller's responsibility to
+	 * ensure no duplicate conditions are added.
+	 * @param table The <code>String</code> table to
+	 * check.
+	 * @param column The <code>String</code> name of
+	 * the column to test on.
+	 * @param value The <code>double</code> value for
+	 * the column to test with.
+	 * @param sign The <code>ESign</code> of this
+	 * condition.
+	 * @param relation The <code>ERelation</code> of
+	 * this condition to other conditions in the same
+	 * query.
+	 */
+	public void addCondition(final String table, final String column, final double value, final ESign sign, final ERelation relation) {
+		this.conditions.add(new DoubleSingleCondition(table, column, value, sign));
 		this.relations.add(relation);
 	}
 

@@ -91,6 +91,14 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 			this.tables.add(table);
 		}
 	}
+	
+	@Override
+	public void addCondition(final String table, final String column, final double value, final ESign sign, final ERelation relation) {
+		super.addCondition(table, column, value, sign, relation);
+		if (!this.tables.contains(table)) {
+			this.tables.add(table);
+		}
+	}
 
 	@Override
 	public final void addRangeCondition(final String table, final String column, final int lower, final int higher, final ERelation relation) {
