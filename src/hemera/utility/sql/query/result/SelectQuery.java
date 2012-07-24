@@ -86,10 +86,13 @@ public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 		final int last = size - 1;
 		for (int i = 0; i < size; i++) {
 			final TableColumn col = this.resultcolumns.get(i);
-			builder.append("`").append(col.table).append("`.");
 			if (col instanceof DecryptColumn) {
-				builder.append("AES_DECRYPT(`").append(col.column).append("`, ?)");
+				builder.append("AES_DECRYPT(");
+				builder.append("`").append(col.table).append("`.");
+				builder.append("`").append(col.column).append("`");
+				builder.append(",?)");
 			} else {
+				builder.append("`").append(col.table).append("`.");
 				builder.append("`").append(col.column).append("`");
 			}
 			if (i != last) builder.append(",");

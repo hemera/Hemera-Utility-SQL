@@ -68,9 +68,12 @@ public abstract class AbstractQuery implements IQuery {
 
 	@Override
 	public PreparedStatement prepareStatement() throws SQLException {
-		final String template = this.buildTemplate();
 		this.source = SQLSourceManager.instance.getSource(this.key);
+		if (this.source == null) {
+			throw new RuntimeException("There is no such data source: " + this.key);
+		}
 		this.connection = this.source.datasource.getConnection();
+		final String template = this.buildTemplate();
 		this.statement = this.connection.prepareStatement(template);
 		this.insertValues(this.statement);
 		return this.statement;
