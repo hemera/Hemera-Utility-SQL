@@ -122,6 +122,11 @@ public abstract class AbstractQuery implements IQuery {
 	}
 	
 	@Override
+	public String getKey() {
+		return this.key;
+	}
+	
+	@Override
 	public int getAndIncrementRetryCount() {
 		return this.retryCount.getAndIncrement();
 	}

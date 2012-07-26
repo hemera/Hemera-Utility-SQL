@@ -16,7 +16,7 @@ public class SQLSSHSource extends SQLSource {
 	/**
 	 * The SSH <code>Session</code> instance.
 	 */
-	public final Session session;
+	private final Session session;
 
 	/**
 	 * Constructor of <code>SQLSSHSource</code>.
@@ -48,6 +48,7 @@ public class SQLSSHSource extends SQLSource {
 		final JSch jsch = new JSch();
 		jsch.addIdentity(sshKey);
 		this.session = jsch.getSession(sshUsername, host);
+		this.session.setTimeout(0);
 		this.session.setConfig("StrictHostKeyChecking", "no");
 		this.session.connect();
 		this.session.setPortForwardingL(localPort, "127.0.0.1", port);

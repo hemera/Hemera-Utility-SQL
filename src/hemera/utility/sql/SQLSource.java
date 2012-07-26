@@ -17,20 +17,28 @@ public class SQLSource {
 	/**
 	 * The <code>String</code> address of the host.
 	 */
-	public final String host;
+	private final String host;
 	/**
 	 * The <code>int</code> port of the host.
 	 */
-	public final int port;
+	private final int port;
 	/**
 	 * The <code>String</code> name of the database.
 	 */
 	public final String dbName;
 	/**
+	 * The <code>String</code> login user name.
+	 */
+	private final String dbUsername;
+	/**
+	 * The <code>String</code> login password.
+	 */
+	private final String dbPassword;
+	/**
 	 * The <code>BasicDataSource</code> instance.
 	 */
-	public final BasicDataSource datasource;
-	
+	public volatile BasicDataSource datasource;
+
 	/**
 	 * Constructor of <code>SQLSource</code>.
 	 * @param key The <code>String</code> key used to
@@ -52,17 +60,27 @@ public class SQLSource {
 		this.host = host;
 		this.port = port;
 		this.dbName = dbName;
+		this.dbUsername = dbUsername;
+		this.dbPassword = dbPassword;
+		this.reconnect();
+	}
+
+	/**
+	 * Re-create the data source and connect to the
+	 * remote host.
+	 */
+	public void reconnect() {
 		// Create database URL string.
 		final StringBuilder urlbuilder = new StringBuilder();
-		urlbuilder.append("jdbc:mysql://").append(host).append(":").append(port).append("/").append(this.dbName);
+		urlbuilder.append("jdbc:mysql://").append(this.host).append(":").append(this.port).append("/").append(this.dbName);
 		final String url = urlbuilder.toString();
 		// Create data source.
 		final BasicDataSource datasource = new BasicDataSource();
 		datasource.setDriverClassName("com.mysql.jdbc.Driver");
 		datasource.setUrl(url);
 		datasource.setTestOnBorrow(true);
-		datasource.setUsername(dbUsername);
-		datasource.setPassword(dbPassword);
+		datasource.setUsername(this.dbUsername);
+		datasource.setPassword(this.dbPassword);
 		this.datasource = datasource;
 	}
 }

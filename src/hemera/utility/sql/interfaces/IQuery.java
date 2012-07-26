@@ -61,6 +61,12 @@ public interface IQuery {
 	public void close() throws SQLException;
 	
 	/**
+	 * Retrieve the data source key.
+	 * @return The <code>String</code> key.
+	 */
+	public String getKey();
+	
+	/**
 	 * Retrieve and increment the number of times this
 	 * query has been retried for execution atomically
 	 * due to a previous failure caused by a

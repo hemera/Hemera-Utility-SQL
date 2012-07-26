@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 
 import hemera.core.utility.logging.FileLogger;
+import hemera.utility.sql.SQLSource;
+import hemera.utility.sql.SQLSourceManager;
 import hemera.utility.sql.enumn.ESQLConfig;
 import hemera.utility.sql.interfaces.IModifyQuery;
 import hemera.utility.sql.interfaces.IQuery;
@@ -112,6 +114,9 @@ public enum QueryExecutor {
 			builder.append(e.getMessage()).append("\n");
 			builder.append("Attempt to retry.");
 			this.logger.warning(builder.toString());
+			// Reconnect the data source.
+			final SQLSource source = SQLSourceManager.instance.getSource(query.getKey());
+			source.reconnect();
 			// Retry.
 			return query.execute();
 		} else {
