@@ -1,5 +1,7 @@
 package hemera.utility.sql;
 
+import java.sql.SQLException;
+
 import org.apache.commons.dbcp.BasicDataSource;
 
 /**
@@ -69,7 +71,7 @@ public class SQLSource {
 	 * Re-create the data source and connect to the
 	 * remote host.
 	 */
-	public void reconnect() {
+	public synchronized void reconnect() {
 		// Create database URL string.
 		final StringBuilder urlbuilder = new StringBuilder();
 		urlbuilder.append("jdbc:mysql://").append(this.host).append(":").append(this.port).append("/").append(this.dbName);
@@ -82,5 +84,13 @@ public class SQLSource {
 		datasource.setUsername(this.dbUsername);
 		datasource.setPassword(this.dbPassword);
 		this.datasource = datasource;
+	}
+	
+	/**
+	 * Close the data source connection.
+	 * @throws SQLException If closing failed.
+	 */
+	public synchronized void close() throws SQLException {
+		this.datasource.close();
 	}
 }

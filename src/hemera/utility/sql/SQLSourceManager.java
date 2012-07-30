@@ -1,5 +1,6 @@
 package hemera.utility.sql;
 
+import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -103,6 +104,17 @@ public enum SQLSourceManager {
 		final SQLSSHSource source = new SQLSSHSource(key, host, port, dbName, dbUsername, dbPassword,
 				sshKey, sshUsername, localPort);
 		return this.sources.putIfAbsent(key, source);
+	}
+	
+	/**
+	 * Close all of the attached SQL data sources.
+	 * @throws SQLException If closing failed.
+	 */
+	public void closeAll() throws SQLException {
+		final Iterable<SQLSource> sources = this.sources.values();
+		for (final SQLSource source : sources) {
+			source.close();
+		}
 	}
 
 	/**

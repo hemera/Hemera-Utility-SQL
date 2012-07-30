@@ -1,12 +1,14 @@
 package hemera.utility.sql;
 
+import java.sql.SQLException;
+
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
  * <code>SQLSSHSource</code> defines the immutable
- * structure representing a SQL data source conncected
+ * structure representing a SQL data source connected
  * via a SSH tunnel.
  *
  * @author Yi Wang (Neakor)
@@ -52,5 +54,11 @@ public class SQLSSHSource extends SQLSource {
 		this.session.setConfig("StrictHostKeyChecking", "no");
 		this.session.connect();
 		this.session.setPortForwardingL(localPort, "127.0.0.1", port);
+	}
+	
+	@Override
+	public synchronized void close() throws SQLException {
+		super.close();
+		this.session.disconnect();
 	}
 }
