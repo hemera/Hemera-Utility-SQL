@@ -107,14 +107,16 @@ public enum SQLSourceManager {
 	}
 	
 	/**
-	 * Close all of the attached SQL data sources.
+	 * Detach and close all of the attached SQL data
+	 * sources.
 	 * @throws SQLException If closing failed.
 	 */
-	public void closeAll() throws SQLException {
+	public void detachAll() throws SQLException {
 		final Iterable<SQLSource> sources = this.sources.values();
 		for (final SQLSource source : sources) {
 			source.close();
 		}
+		this.sources.clear();
 	}
 
 	/**
