@@ -63,6 +63,17 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	}
 	
 	/**
+	 * Add the specified column by the delta integer
+	 * amount.
+	 * @param column The <code>String</code> column
+	 * name.
+	 * @param delta The <code>int</code> delta amount.
+	 */
+	public void addDelta(final String column, final int delta) {
+		this.data.add(new DeltaValue(this.tablename, column, delta));
+	}
+
+	/**
 	 * Add the column-name value pair to be set.
 	 * @param column The <code>String</code> column
 	 * name.
@@ -120,17 +131,6 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 		this.data.add(new EncryptColumnValue(this.tablename, column, value, key));
 	}
 
-	/**
-	 * Update the specified column by the delta integer
-	 * amount.
-	 * @param column The <code>String</code> column
-	 * name.
-	 * @param delta The <code>int</code> delta amount.
-	 */
-	public void updateDelta(final String column, final int delta) {
-		this.data.add(new DeltaValue(this.tablename, column, delta));
-	}
-	
 	@Override
 	public Integer execute() throws SQLException {
 		return QueryExecutor.instance.execute(this);

@@ -15,7 +15,7 @@ import hemera.utility.sql.enumn.ESign;
  * @author Yi Wang (Neakor)
  * @version 1.0.0
  */
-public final class DistanceCondition extends AbstractCondition {
+final class DistanceCondition extends AbstractCondition {
 	/**
 	 * The <code>String</code> table to check.
 	 */
@@ -58,16 +58,16 @@ public final class DistanceCondition extends AbstractCondition {
 	 * table's latitude column in degrees.
 	 * @param longitudeCol The <code>String</code>
 	 * table's longitude column in degrees.
+	 * @param sign The <code>ESign</code> value.
 	 * @param latitude The <code>double</code> given
 	 * latitude value in degrees.
 	 * @param longitude The <code>double</code> given
 	 * longitude value in degrees.
 	 * @param distance The <code>double</code> given
 	 * distance to check.
-	 * @param sign The <code>ESign</code> value.
 	 */
-	public DistanceCondition(final String table, final String latitudeCol, final String longitudeCol,
-			final double latitude, final double longitude, final double distance, final ESign sign) {
+	DistanceCondition(final String table, final String latitudeCol, final String longitudeCol,
+			final ESign sign, final double latitude, final double longitude, final double distance) {
 		this.table = table;
 		this.latitudeCol = latitudeCol;
 		this.longitudeCol = longitudeCol;

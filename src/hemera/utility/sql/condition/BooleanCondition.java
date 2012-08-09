@@ -6,38 +6,39 @@ import java.sql.SQLException;
 import hemera.utility.sql.enumn.ESign;
 
 /**
- * <code>StringSingleCondition</code> defines the query
- * single condition that holds a string value.
+ * <code>BooleanCondition</code> defines the condition
+ * that compares the database entry against the given
+ * boolean value.
  *
  * @author Yi Wang (Neakor)
  * @version 1.0.0
  */
-public final class StringSingleCondition extends SingleCondition {
+final class BooleanCondition extends AbstractSingleCondition {
 	/**
-	 * The <code>String</code> value to check against
+	 * The <code>boolean</code> value to check against
 	 * the column.
 	 */
-	private final String value;
+	private final boolean value;
 	
 	/**
-	 * Constructor of <code>StringSingleCondition</code>.
+	 * Constructor of <code>BooleanCondition</code>.
 	 * @param table The <code>String</code> table to
 	 * check.
 	 * @param column The <code>String</code> name of
 	 * the column to test on.
-	 * @param value The <code>String</code> value for
-	 * the column to test with.
 	 * @param sign The <code>ESign</code> of this
 	 * condition.
+	 * @param value The <code>boolean</code> value for
+	 * the column to test with.
 	 */
-	public StringSingleCondition(final String table, final String column, final String value, final ESign sign) {
+	BooleanCondition(final String table, final String column, final ESign sign, final boolean value) {
 		super(table, column, sign);
 		this.value = value;
 	}
 	
 	@Override
 	public int insertValues(final PreparedStatement statement, final int start) throws SQLException {
-		statement.setString(start, this.value);
+		statement.setBoolean(start, this.value);
 		return 1;
 	}
 }

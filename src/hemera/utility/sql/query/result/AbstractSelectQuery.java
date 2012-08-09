@@ -6,17 +6,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import hemera.utility.sql.condition.Condition;
 import hemera.utility.sql.enumn.EOrder;
 import hemera.utility.sql.enumn.ERelation;
-import hemera.utility.sql.enumn.ESign;
 import hemera.utility.sql.interfaces.IResultsQuery;
 import hemera.utility.sql.query.ConditionalQuery;
 import hemera.utility.sql.util.QueryExecutor;
 
 /**
- * <code>AbstractSelectQuery</code> defines a the
- * abstraction of a selection query that maintains a
- * set of conditions.
+ * <code>AbstractSelectQuery</code> defines the select
+ * query abstraction that allows condition, limit and
+ * ordering.
  * <p>
  * <code>AbstractSelectQuery</code> internally manages
  * its result set instance and properly releases result
@@ -67,89 +67,32 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 		super(key);
 		this.tables = new ArrayList<String>();
 	}
-
+	
 	@Override
-	public final void addCondition(final String table, final String column, final int value, final ESign sign, final ERelation relation) {
-		super.addCondition(table, column, value, sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-
-	@Override
-	public final void addCondition(final String table, final String column, final long value, final ESign sign, final ERelation relation) {
-		super.addCondition(table, column, value,  sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-
-	@Override
-	public final void addCondition(final String table, final String column, final String value, final ESign sign, final ERelation relation) {
-		super.addCondition(table, column, value, sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
+	public void addCondition(final Condition condition) {
+		super.addCondition(condition);
+		final List<String> tables = condition.getTables();
+		final int size = tables.size();
+		for (int i = 0; i < size; i++) {
+			final String table = tables.get(i);
+			if (!this.tables.contains(table)) {
+				this.tables.add(table);
+			}
 		}
 	}
 	
 	@Override
-	public void addCondition(final String table, final String column, final double value, final ESign sign, final ERelation relation) {
-		super.addCondition(table, column, value, sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-
-	@Override
-	public final void addRangeCondition(final String table, final String column, final int lower, final int higher, final ERelation relation) {
-		super.addRangeCondition(table, column, lower, higher, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-
-	@Override
-	public final void addCondition(final String table, final String column, final boolean value, final ESign sign, final ERelation relation) {
-		super.addCondition(table, column, value, sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-
-	@Override
-	public final void addPasswordCondition(final String table, final String column, final String value, final ESign sign, final ERelation relation) {
-		super.addPasswordCondition(table, column, value, sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-	
-	@Override
-	public final void addJointCondition(final String table1, final String column1, final String table2, final String column2,
-			final ESign sign, final ERelation relation) {
-		super.addJointCondition(table1, column1, table2, column2, sign, relation);
-		if (!this.tables.contains(table1)) {
-			this.tables.add(table1);
-		}
-		if (!this.tables.contains(table2)) {
-			this.tables.add(table2);
-		}
-	}
-
-	@Override
-	public void addEncryptionCondition(final String table, final String column, final String value, final String key, final ESign sign, final ERelation relation) {
-		super.addEncryptionCondition(table, column, value, key, sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
-		}
-	}
-
-	@Override
-	public final void addDistanceCondition(final String table, final String latitudeCol, final String longitudeCol,
-			final double latitude, final double longitude, final double distance, final ESign sign, final ERelation relation) {
-		super.addDistanceCondition(table, latitudeCol, longitudeCol, latitude, longitude, distance, sign, relation);
-		if (!this.tables.contains(table)) {
-			this.tables.add(table);
+	public void addConditions(final Condition[] conditions, final ERelation[] relations) {
+		super.addConditions(conditions, relations);
+		for (int i = 0; i < conditions.length; i++) {
+			final List<String> tables = conditions[i].getTables();
+			final int size = tables.size();
+			for (int j = 0; j < size; j++) {
+				final String table = tables.get(j);
+				if (!this.tables.contains(table)) {
+					this.tables.add(table);
+				}
+			}
 		}
 	}
 

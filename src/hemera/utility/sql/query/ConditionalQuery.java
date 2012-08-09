@@ -5,19 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import hemera.utility.sql.condition.AbstractCondition;
-import hemera.utility.sql.condition.BooleanSingleCondition;
-import hemera.utility.sql.condition.DistanceCondition;
-import hemera.utility.sql.condition.DoubleSingleCondition;
-import hemera.utility.sql.condition.EncryptCondition;
-import hemera.utility.sql.condition.IntRangeCondition;
-import hemera.utility.sql.condition.IntSingleCondition;
-import hemera.utility.sql.condition.JointCondition;
-import hemera.utility.sql.condition.LongSingleCondition;
-import hemera.utility.sql.condition.PasswordCondition;
-import hemera.utility.sql.condition.StringSingleCondition;
+import hemera.utility.sql.condition.Condition;
+import hemera.utility.sql.condition.ConditionGroup;
 import hemera.utility.sql.enumn.ERelation;
-import hemera.utility.sql.enumn.ESign;
 
 /**
  * <code>ConditionalQuery</code> defines abstraction
@@ -29,12 +19,12 @@ import hemera.utility.sql.enumn.ESign;
  */
 public abstract class ConditionalQuery extends AbstractQuery {
 	/**
-	 * The <code>List</code> of <code>AbstractCondition</code>.
+	 * The <code>List</code> of <code>ConditionGroup</code>.
 	 */
-	private final List<AbstractCondition> conditions;
+	protected final List<ConditionGroup> conditionGroups;
 	/**
 	 * The <code>List</code> of <code>ERelation</code>
-	 * in correspondence to the list of conditions.
+	 * that associates the corresponding condition groups.
 	 */
 	private final List<ERelation> relations;
 	
@@ -45,294 +35,41 @@ public abstract class ConditionalQuery extends AbstractQuery {
 	 */
 	protected ConditionalQuery(final String key) {
 		super(key);
-		this.conditions = new ArrayList<AbstractCondition>();
+		this.conditionGroups = new ArrayList<ConditionGroup>();
 		this.relations = new ArrayList<ERelation>();
 	}
 	
 	/**
-	 * Add a single test condition to test.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> name of
-	 * the column to test on.
-	 * @param value The <code>int</code> value for
-	 * the column to test with.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
+	 * Add a single condition to this query.
+	 * @param condition The <code>Condition</code>.
 	 */
-	public void addCondition(final String table, final String column, final int value, final ESign sign, final ERelation relation) {
-		this.conditions.add(new IntSingleCondition(table, column, value, sign));
-		this.relations.add(relation);
+	public void addCondition(final Condition condition) {
+		if (this.conditionGroups.contains(condition.group)) return;
+		this.conditionGroups.add(condition.group);
 	}
 	
 	/**
-	 * Add a single test condition to test.
+	 * Add an array of conditions associated with the
+	 * given array of relations to this query.
 	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> name of
-	 * the column to test on.
-	 * @param value The <code>long</code> value for
-	 * the column to test with.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
+	 * If any of the conditions is a nested condition,
+	 * the nested children conditions are grouped together
+	 * as a single condition during evaluation.
+	 * @param conditions The array of <code>Condition</code>.
+	 * @param relations The array of <code>ERelation</code>.
 	 */
-	public void addCondition(final String table, final String column, final long value, final ESign sign, final ERelation relation) {
-		this.conditions.add(new LongSingleCondition(table, column, value, sign));
-		this.relations.add(relation);
-	}
-
-	/**
-	 * Add a single test condition to test.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> name of
-	 * the column to test on.
-	 * @param value The <code>String</code> value for
-	 * the column to test with.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addCondition(final String table, final String column, final String value, final ESign sign, final ERelation relation) {
-		this.conditions.add(new StringSingleCondition(table, column, value, sign));
-		this.relations.add(relation);
-	}
-	
-	/**
-	 * Add a single test condition to test.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> name of
-	 * the column to test on.
-	 * @param value The <code>double</code> value for
-	 * the column to test with.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addCondition(final String table, final String column, final double value, final ESign sign, final ERelation relation) {
-		this.conditions.add(new DoubleSingleCondition(table, column, value, sign));
-		this.relations.add(relation);
-	}
-
-	/**
-	 * Add a range condition to test a value range.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> column to
-	 * check.
-	 * @param lower The <code>int</code> range lower
-	 * value.
-	 * @param higher The <code>int</code> range higher
-	 * value.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addRangeCondition(final String table, final String column, final int lower, final int higher, final ERelation relation) {
-		this.conditions.add(new IntRangeCondition(table, column, lower, higher));
-		this.relations.add(relation);
-	}
-
-	/**
-	 * Add a single test condition to test.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> name of
-	 * the column to test on.
-	 * @param value The <code>boolean</code> value for
-	 * the column to test with.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addCondition(final String table, final String column, final boolean value, final ESign sign, final ERelation relation) {
-		this.conditions.add(new BooleanSingleCondition(table, column, value, sign));
-		this.relations.add(relation);
-	}
-	
-	/**
-	 * Add a single password condition to test.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> name of
-	 * the column to test on.
-	 * @param value The <code>String</code> value for
-	 * the column to test with.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addPasswordCondition(final String table, final String column, final String value, final ESign sign, final ERelation relation) {
-		this.conditions.add(new PasswordCondition(table, column, value, sign));
-		this.relations.add(relation);
-	}
-	
-	/**
-	 * Add a joint condition that tests against a pair
-	 * of columns of two tables. This condition is
-	 * only valid if both tables are added to the query
-	 * as a joint operation.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table1 The <code>String</code> name of
-	 * the first table.
-	 * @param column1 The <code>String</code> name of
-	 * the first column.
-	 * @param table2 The <code>String</code> name of
-	 * the second table.
-	 * @param column2 The <code>String</code> name of
-	 * the second column.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addJointCondition(final String table1, final String column1, final String table2, final String column2,
-			final ESign sign, final ERelation relation) {
-		this.conditions.add(new JointCondition(table1, column1, table2, column2, sign));
-		this.relations.add(relation);
-	}
-
-	/**
-	 * Add a single encryption condition to test.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param column The <code>String</code> name of
-	 * the column to test on.
-	 * @param value The <code>String</code> value for
-	 * the column to test with.
-	 * @param key The <code>String</code> encryption
-	 * key.
-	 * @param sign The <code>ESign</code> of this
-	 * condition.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addEncryptionCondition(final String table, final String column, final String value, final String key, final ESign sign, final ERelation relation) {
-		this.conditions.add(new EncryptCondition(table, column, value, key, sign));
-		this.relations.add(relation);
-	}
-	
-	/**
-	 * Add a distance condition that tests the table
-	 * entries coordinates distance to the specified
-	 * coordinates against the given distance value.
-	 * <p>
-	 * Given condition only affects the relation
-	 * between this condition and the next added one.
-	 * The last condition's relation is ignored.
-	 * <p>
-	 * This method does not provide any duplication
-	 * check. It is the caller's responsibility to
-	 * ensure no duplicate conditions are added.
-	 * @param table The <code>String</code> table to
-	 * check.
-	 * @param latitudeCol The <code>String</code>
-	 * table's latitude column in degrees.
-	 * @param longitudeCol The <code>String</code>
-	 * table's longitude column in degrees.
-	 * @param latitude The <code>double</code> given
-	 * latitude value in degrees.
-	 * @param longitude The <code>double</code> given
-	 * longitude value in degrees.
-	 * @param distance The <code>double</code> given
-	 * distance to check in meters.
-	 * @param sign The <code>ESign</code> value.
-	 * @param relation The <code>ERelation</code> of
-	 * this condition to other conditions in the same
-	 * query.
-	 */
-	public void addDistanceCondition(final String table, final String latitudeCol, final String longitudeCol,
-			final double latitude, final double longitude, final double distance, final ESign sign, final ERelation relation) {
-		this.conditions.add(new DistanceCondition(table, latitudeCol, longitudeCol, latitude, longitude, distance, sign));
-		this.relations.add(relation);
+	public void addConditions(final Condition[] conditions, final ERelation[] relations) {
+		if (conditions.length != relations.length+1) {
+			throw new IllegalArgumentException("There must be n-1 relations with n conditions.");
+		}
+		for (int i = 0; i < conditions.length; i++) {
+			if (!this.conditionGroups.contains(conditions[i].group)) {
+				this.conditionGroups.add(conditions[i].group);
+			}
+		}
+		for (int i = 0; i < relations.length; i++) {
+			this.relations.add(relations[i]);
+		}
 	}
 	
 	/**
@@ -341,19 +78,19 @@ public abstract class ConditionalQuery extends AbstractQuery {
 	 * @return The <code>String</code> template. Or
 	 * <code>where true</code> if there are no conditions.
 	 */
-	protected String buildConditionsTemplate() {
+	protected final String buildConditionsTemplate() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("where ");
-		final int size = this.conditions.size();
+		final int size = this.conditionGroups.size();
 		if (size <= 0) {
 			builder.append("true");
 		} else {
 			final int last = size - 1;
 			for (int i = 0; i < size; i++) {
-				final AbstractCondition condition = this.conditions.get(i);
-				final ERelation relation = this.relations.get(i);
-				builder.append(condition.getTemplate());
-				if (i != last) {
+				final ConditionGroup conditionGroup = this.conditionGroups.get(i);
+				final ERelation relation = (i==last) ? null : this.relations.get(i);
+				builder.append("(").append(conditionGroup.getTemplate()).append(")");
+				if (relation != null) {
 					builder.append(" ").append(relation.value).append(" ");
 				}
 			}
@@ -373,12 +110,12 @@ public abstract class ConditionalQuery extends AbstractQuery {
 	 * inserted.
 	 * @throws SQLException If insertion failed.
 	 */
-	protected int insertConditionValues(final PreparedStatement statement, final int start) throws SQLException {
-		final int size = this.conditions.size();
+	protected final int insertConditionValues(final PreparedStatement statement, final int start) throws SQLException {
+		final int size = this.conditionGroups.size();
 		int count = 0;
 		for (int i = 0; i < size; i++) {
-			final AbstractCondition condition = this.conditions.get(i);
-			final int inserted = condition.insertValues(statement, start+count);
+			final ConditionGroup conditionGroup = this.conditionGroups.get(i);
+			final int inserted = conditionGroup.insertValues(statement, start+count);
 			count += inserted;
 		}
 		return count;
@@ -387,8 +124,8 @@ public abstract class ConditionalQuery extends AbstractQuery {
 	/**
 	 * Clear all previously added conditions.
 	 */
-	public void clearConditions() {
-		this.conditions.clear();
+	public final void clearConditions() {
+		this.conditionGroups.clear();
 		this.relations.clear();
 	}
 }

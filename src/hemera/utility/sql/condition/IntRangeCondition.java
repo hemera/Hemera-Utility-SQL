@@ -4,14 +4,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * <code>IntRangeCondition</code> defines the query
- * range condition implementation that contains a
- * pair of integers as the range.
+ * <code>IntRangeCondition</code> defines the condition
+ * that compares the database entry against the given
+ * integer range.
  *
  * @author Yi Wang (Neakor)
  * @version 1.0.0
  */
-public final class IntRangeCondition extends RangeCondition {
+final class IntRangeCondition extends AbstractRangeCondition {
 	/**
 	 * The <code>int</code> range lower value.
 	 */
@@ -38,7 +38,7 @@ public final class IntRangeCondition extends RangeCondition {
 	 * value should be encrypted. <code>false</code>
 	 * otherwise.
 	 */
-	public IntRangeCondition(final String table, final String column, final int lower, final int higher) {
+	IntRangeCondition(final String table, final String column, final int lower, final int higher) {
 		super(table, column);
 		this.lower = lower;
 		this.higher = higher;

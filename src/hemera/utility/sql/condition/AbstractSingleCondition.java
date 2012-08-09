@@ -3,14 +3,13 @@ package hemera.utility.sql.condition;
 import hemera.utility.sql.enumn.ESign;
 
 /**
- * <code>SingleCondition</code> defines implementation
- * a conditional query check that only checks a single
- * column against a single value.
+ * <code>AbstractSingleCondition</code> defines a single
+ * value comparison condition.
  *
  * @author Yi Wang (Neakor)
  * @version 1.0.0
  */
-public abstract class SingleCondition extends AbstractCondition {
+abstract class AbstractSingleCondition extends AbstractCondition {
 	/**
 	 * The <code>String</code> table to check.
 	 */
@@ -25,7 +24,7 @@ public abstract class SingleCondition extends AbstractCondition {
 	protected final ESign sign;
 	
 	/**
-	 * Constructor of <code>SingleCondition</code>.
+	 * Constructor of <code>AbstractSingleCondition</code>.
 	 * @param table The <code>String</code> table to
 	 * check.
 	 * @param column The <code>String</code> name of
@@ -35,7 +34,7 @@ public abstract class SingleCondition extends AbstractCondition {
 	 * @param sign The <code>ESign</code> of this
 	 * condition.
 	 */
-	public SingleCondition(final String table, final String column, final ESign sign) {
+	AbstractSingleCondition(final String table, final String column, final ESign sign) {
 		this.table = table;
 		this.column = column;
 		this.sign = sign;

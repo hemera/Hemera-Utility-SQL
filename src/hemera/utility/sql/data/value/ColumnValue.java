@@ -1,6 +1,5 @@
 package hemera.utility.sql.data.value;
 
-
 import hemera.utility.sql.data.TableColumn;
 
 import java.sql.PreparedStatement;

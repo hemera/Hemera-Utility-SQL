@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import hemera.core.utility.data.TimeData;
+import hemera.utility.sql.condition.Condition;
 import hemera.utility.sql.enumn.ESign;
 import hemera.utility.sql.query.result.SelectQuery;
 
@@ -257,7 +258,7 @@ public class ConfigValue {
 	private SelectQuery newSelectQuery() {
 		final SelectQuery query = new SelectQuery(this.sourceKey);
 		query.addResultColumn(this.table, this.valuecol);
-		query.addCondition(this.table, this.keycol, this.key, ESign.Equal, null);
+		query.addCondition(new Condition().set(this.table, this.keycol, ESign.Equal, this.key));
 		return query;
 	}
 }
