@@ -1,5 +1,6 @@
 package hemera.utility.sql;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -86,9 +87,8 @@ public enum SQLSourceManager {
 	 * name used to login to the database.
 	 * @param dbPassword The <code>String</code> password
 	 * used to login to the database.
-	 * @param sshKey The <code>String</code> path to
-	 * the SSH key file.
-	 * @param sshUsername The <code>String</code>
+	 * @param sshKey The SSH key <code>File</code>.
+	 * @param sshUsername The <code>String</code> SSH
 	 * user name used login to the SSH host.
 	 * @param localPort The <code>int</code> forwarding
 	 * port number to use on the local machine.
@@ -98,11 +98,54 @@ public enum SQLSourceManager {
 	 */
 	public SQLSource attachIfAbscent(final String key, final String host, final int port,
 			final String dbName, final String dbUsername, final String dbPassword,
-			final String sshKey, final String sshUsername, final int localPort) throws JSchException {
+			final File sshKey, final String sshUsername, final int localPort) throws JSchException {
 		final SQLSource existing = this.sources.get(key);
 		if (existing != null) return existing;
 		final SQLSSHSource source = new SQLSSHSource(key, host, port, dbName, dbUsername, dbPassword,
 				sshKey, sshUsername, localPort);
+		return this.sources.putIfAbsent(key, source);
+	}
+	
+	/**
+	 * Attach the data source with specified values
+	 * to the manager if the key is not associated
+	 * with a source already.
+	 * <p>
+	 * This method sets up a SSH tunnel to the host
+	 * via password authentication with given SSH user
+	 * name and password. And a local-host SQL
+	 * connection is setup on the local port to forward
+	 * all SQL packets to the remote host at specified
+	 * port.
+	 * @param key The <code>String</code> key used to
+	 * identify the attached data source.
+	 * @param host The <code>String</code> address of
+	 * the host.
+	 * @param port The <code>int</code> port of the
+	 * host to connect to.
+	 * @param dbName The <code>String</code> name of
+	 * the database.
+	 * @param dbUsername The <code>String</code> user
+	 * name used to login to the database.
+	 * @param dbPassword The <code>String</code> password
+	 * used to login to the database.
+	 * @param sshUsername The <code>String</code> SSH
+	 * user name used login to the SSH host.
+	 * @param sshPassword The <code>String</code> SSH
+	 * password used to login to the SSH host.
+	 * @param localPort The <code>int</code> forwarding
+	 * port number to use on the local machine.
+	 * @return The previous <code>SQLSource</code>
+	 * associated with the key.
+	 * @throws JSchException If SSH tunnel setup failed.
+	 */
+	public SQLSource attachIfAbscent(final String key, final String host, final int port,
+			final String dbName, final String dbUsername, final String dbPassword,
+			final String sshUsername, final String sshPassword, final int localPort) throws JSchException {
+		final SQLSource existing = this.sources.get(key);
+		if (existing != null) return existing;
+		final SQLSSHSource source = new SQLSSHSource(key, host, port, dbName, dbUsername, dbPassword,
+				sshUsername, sshPassword, localPort);
 		return this.sources.putIfAbsent(key, source);
 	}
 	
