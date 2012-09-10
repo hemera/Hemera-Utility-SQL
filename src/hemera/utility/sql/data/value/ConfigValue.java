@@ -56,6 +56,16 @@ public class ConfigValue {
 	 * the cached data value.
 	 */
 	private final AtomicReference<Object> dataref;
+	/**
+	 * The <code>long</code> cache lasting duration
+	 * in milliseconds.
+	 */
+	private final long period;
+	/**
+	 * The <code>long</code> last update time in
+	 * milliseconds.
+	 */
+	private volatile long lastUpdateTime;
 
 	/**
 	 * Constructor of <code>AbstractConfig</code>.
@@ -68,24 +78,48 @@ public class ConfigValue {
 	 * column name.
 	 * @param key The <code>String</code> key column
 	 * for the configuration value.
+	 * @param period The <code>long</code> cache valied
+	 * duration in milliseconds.
 	 */
-	public ConfigValue(final String sourceKey, final String table, final String keycol, final String valuecol, final String key) {
+	public ConfigValue(final String sourceKey, final String table, final String keycol, final String valuecol, final String key, final long period) {
 		this.sourceKey = sourceKey;
 		this.table = table;
 		this.keycol = keycol;
 		this.valuecol = valuecol;
 		this.key = key;
 		this.dataref = new AtomicReference<Object>(null);
+		this.period = period;
+		this.lastUpdateTime = Long.MIN_VALUE;
 	}
 	
 	/**
-	 * Retrieve the value cache.
-	 * @return The last cached <code>Object</code> value.
+	 * Clear out cache value.
 	 */
-	public Object clearCache() {
-		final Object value = this.dataref.get();
+	public void clearCache() {
 		this.dataref.set(null);
-		return value;
+		this.lastUpdateTime = Long.MIN_VALUE;
+	}
+	
+	/**
+	 * Retrieve the data from cache if the cache is
+	 * still valid.
+	 * @return The <code>Object</code> data if the
+	 * cache is still valid. <code>null</code> if
+	 * there is no data cached or cache has expired.
+	 */
+	private Object getFromCache() {
+		// Make sure cache is still valid.
+		if (this.lastUpdateTime == Long.MIN_VALUE) {
+			this.clearCache();
+			return null;
+		}
+		final long current = System.currentTimeMillis();
+		final long end = this.lastUpdateTime + this.period;
+		if (current >= end) {
+			this.clearCache();
+			return null;
+		}
+		else return this.dataref.get();
 	}
 	
 	/**
@@ -99,6 +133,7 @@ public class ConfigValue {
 	 */
 	private Object tryCache(final Object value) {
 		this.dataref.compareAndSet(null, value);
+		this.lastUpdateTime = System.currentTimeMillis();
 		return this.dataref.get();
 	}
 	
@@ -108,7 +143,7 @@ public class ConfigValue {
 	 * data is found, <code>-1</code> is returned.
 	 */
 	public int getIntValue() {
-		final Integer value = (Integer)this.dataref.get();
+		final Integer value = (Integer)this.getFromCache();
 		if (value != null) return value;
 		try {
 			final SelectQuery query = this.newSelectQuery();
@@ -131,7 +166,7 @@ public class ConfigValue {
 	 * data is found, <code>-1</code> is returned.
 	 */
 	public long getLongValue() {
-		final Long value = (Long)this.dataref.get();
+		final Long value = (Long)this.getFromCache();
 		if (value != null) return value;
 		try {
 			final SelectQuery query = this.newSelectQuery();
@@ -164,7 +199,7 @@ public class ConfigValue {
 	 * data is found, <code>-1</code> is returned.
 	 */
 	public float getFloatValue() {
-		final Float value = (Float)this.dataref.get();
+		final Float value = (Float)this.getFromCache();
 		if (value != null) return value;
 		try {
 			final SelectQuery query = this.newSelectQuery();
@@ -187,7 +222,7 @@ public class ConfigValue {
 	 * data is found, <code>null</code> is returned.
 	 */
 	public String getStringValue() {
-		final String value = (String)this.dataref.get();
+		final String value = (String)this.getFromCache();
 		if (value != null) return value;
 		try {
 			final SelectQuery query = this.newSelectQuery();
@@ -210,7 +245,7 @@ public class ConfigValue {
 	 * data is found, <code>-1</code> is returned.
 	 */
 	public double getDoubleValue() {
-		final Double value = (Double)this.dataref.get();
+		final Double value = (Double)this.getFromCache();
 		if (value != null) return value;
 		try {
 			final SelectQuery query = this.newSelectQuery();
@@ -233,7 +268,7 @@ public class ConfigValue {
 	 * data is found, <code>false</code> is returned.
 	 */
 	public boolean getBooleanValue() {
-		final Boolean value = (Boolean)this.dataref.get();
+		final Boolean value = (Boolean)this.getFromCache();
 		if (value != null) return value;
 		try {
 			final SelectQuery query = this.newSelectQuery();
