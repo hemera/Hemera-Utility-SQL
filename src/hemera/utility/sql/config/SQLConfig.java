@@ -54,7 +54,7 @@ public enum SQLConfig {
 	 * -1 means wait indefinitely. The default value
 	 * is <code>20000</code>.
 	 */
-	MaxWaitTime(20000),
+	MaxWaitTime(20000l),
 	/**
 	 * The <code>String</code> validation query used
 	 * to test connection before being retrieved or
