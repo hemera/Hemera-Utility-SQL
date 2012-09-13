@@ -1,5 +1,7 @@
 package hemera.utility.sql;
 
+import hemera.utility.sql.config.SQLConfig;
+
 import java.sql.SQLException;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -78,6 +80,20 @@ public class SQLSource {
 		final String url = urlbuilder.toString();
 		// Create data source.
 		final BasicDataSource datasource = new BasicDataSource();
+		datasource.setDefaultAutoCommit((Boolean)SQLConfig.AutoCommit.value());
+		datasource.setInitialSize((Integer)SQLConfig.InitialPoolSize.value());
+		datasource.setMaxActive((Integer)SQLConfig.MaxPoolSize.value());
+		datasource.setMaxIdle((Integer)SQLConfig.MaxIdleSize.value());
+		datasource.setMinIdle((Integer)SQLConfig.MinIdleSize.value());
+		datasource.setMaxWait((Long)SQLConfig.MaxWaitTime.value());
+		datasource.setValidationQuery((String)SQLConfig.ValidationQuery.value());
+		datasource.setTestOnBorrow((Boolean)SQLConfig.TestOnBorrow.value());
+		datasource.setTestOnReturn((Boolean)SQLConfig.TestOnReturn.value());
+		datasource.setTestWhileIdle((Boolean)SQLConfig.TestWhileIdle.value());
+		datasource.setPoolPreparedStatements((Boolean)SQLConfig.PoolQueryStatements.value());
+		datasource.setRemoveAbandoned((Boolean)SQLConfig.RemoveAbandoned.value());
+		datasource.setRemoveAbandonedTimeout((Integer)SQLConfig.RemoveAbandonedTimeout.value());
+		datasource.setLogAbandoned((Boolean)SQLConfig.LogAbandonedCode.value());
 		datasource.setDriverClassName("com.mysql.jdbc.Driver");
 		datasource.setUrl(url);
 		datasource.setTestOnBorrow(true);

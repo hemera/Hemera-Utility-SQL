@@ -8,7 +8,7 @@ import java.sql.SQLRecoverableException;
 import hemera.core.utility.logging.FileLogger;
 import hemera.utility.sql.SQLSource;
 import hemera.utility.sql.SQLSourceManager;
-import hemera.utility.sql.enumn.ESQLConfig;
+import hemera.utility.sql.config.SQLConfig;
 import hemera.utility.sql.interfaces.IModifyQuery;
 import hemera.utility.sql.interfaces.IQuery;
 import hemera.utility.sql.interfaces.IResultsQuery;
@@ -140,7 +140,7 @@ public enum QueryExecutor {
 	private <M extends IQuery> boolean allowRetry(final Exception e, final M query) {
 		// First check limit.
 		final int count = query.getAndIncrementRetryCount();
-		final int limit = (Integer)ESQLConfig.Query_RetryLimit.value();
+		final int limit = (Integer)SQLConfig.Query_RetryLimit.value();
 		if (count >= limit) return false;
 		// Allow SQL recoverable.
 		if (e instanceof SQLRecoverableException) {

@@ -165,6 +165,20 @@ public enum SQLSourceManager {
 		}
 		this.sources.clear();
 	}
+	
+	/**
+	 * Detach the data source with specified key.
+	 * @param key The <code>String</code> key.
+	 * @throws SQLException If closing the data
+	 * source failed.
+	 */
+	public void detach(final String key) throws SQLException {
+		final SQLSource source = this.sources.remove(key);
+		if (source == null) {
+			throw new IllegalArgumentException("No such data source: " + key);
+		}
+		source.close();
+	}
 
 	/**
 	 * Retrieve a SQL source identified by given key.
