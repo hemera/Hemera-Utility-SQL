@@ -13,11 +13,6 @@ import java.util.concurrent.TimeUnit;
  */
 public enum CacheConfig {
 	/**
-	 * The <code>long</code> configuration cache lifetime
-	 * in milliseconds. The default value is 1 hour.
-	 */
-	ConfigLifetime(TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)),
-	/**
 	 * The <code>long</code> maximum time a cached entry
 	 * can stay idle, not accessed before it is purged in
 	 * milliseconds. The default value is 1 hour.
@@ -28,7 +23,13 @@ public enum CacheConfig {
 	 * the database entry cache purging process in
 	 * milliseconds. The default value is 30 minutes.
 	 */
-	EntryPurgeCycleTime(TimeUnit.MILLISECONDS.convert(30, TimeUnit.MINUTES));
+	EntryPurgeCycleTime(TimeUnit.MILLISECONDS.convert(30, TimeUnit.MINUTES)),
+	/**
+	 * The <code>long</code> configuration values cache
+	 * lifetime in milliseconds. The default value is
+	 * 1 hour.
+	 */
+	ConfigLifetime(TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS));
 	
 	/**
 	 * The <code>long</code> value.

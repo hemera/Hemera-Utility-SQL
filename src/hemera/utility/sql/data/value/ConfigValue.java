@@ -8,6 +8,7 @@ import hemera.core.utility.data.TimeData;
 import hemera.utility.sql.condition.Condition;
 import hemera.utility.sql.enumn.ESign;
 import hemera.utility.sql.query.result.SelectQuery;
+import hemera.utility.sql.util.cache.CacheConfig;
 
 /**
  * <code>ConfigValue</code> defines the implementation
@@ -57,11 +58,6 @@ public class ConfigValue {
 	 */
 	private final AtomicReference<Object> dataref;
 	/**
-	 * The <code>long</code> cache lasting duration
-	 * in milliseconds.
-	 */
-	private final long period;
-	/**
 	 * The <code>long</code> last update time in
 	 * milliseconds.
 	 */
@@ -78,17 +74,14 @@ public class ConfigValue {
 	 * column name.
 	 * @param key The <code>String</code> key column
 	 * for the configuration value.
-	 * @param period The <code>long</code> cache valied
-	 * duration in milliseconds.
 	 */
-	public ConfigValue(final String sourceKey, final String table, final String keycol, final String valuecol, final String key, final long period) {
+	public ConfigValue(final String sourceKey, final String table, final String keycol, final String valuecol, final String key) {
 		this.sourceKey = sourceKey;
 		this.table = table;
 		this.keycol = keycol;
 		this.valuecol = valuecol;
 		this.key = key;
 		this.dataref = new AtomicReference<Object>(null);
-		this.period = period;
 		this.lastUpdateTime = Long.MIN_VALUE;
 	}
 	
@@ -114,7 +107,7 @@ public class ConfigValue {
 			return null;
 		}
 		final long current = System.currentTimeMillis();
-		final long end = this.lastUpdateTime + this.period;
+		final long end = this.lastUpdateTime + CacheConfig.ConfigLifetime.value;
 		if (current >= end) {
 			this.clearCache();
 			return null;
