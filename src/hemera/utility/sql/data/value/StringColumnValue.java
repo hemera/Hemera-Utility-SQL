@@ -2,6 +2,7 @@ package hemera.utility.sql.data.value;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 /**
  * <code>StringColumnValue</code> defines the immutable
@@ -31,7 +32,8 @@ public class StringColumnValue extends ColumnValue {
 
 	@Override
 	public int insertValue(final int index, final PreparedStatement statement) throws SQLException {
-		statement.setString(index, this.value);
+		if (this.value == null) statement.setNull(index, Types.VARCHAR);
+		else statement.setString(index, this.value);
 		return 1;
 	}
 }

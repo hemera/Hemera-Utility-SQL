@@ -2,6 +2,7 @@ package hemera.utility.sql.data.value;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 /**
  * <code>EncryptColumnValue</code> defines the immutable
@@ -34,7 +35,8 @@ public final class EncryptColumnValue extends StringColumnValue {
 	
 	@Override
 	public int insertValue(final int index, final PreparedStatement statement) throws SQLException {
-		statement.setString(index, this.value);
+		if (this.value == null) statement.setNull(index, Types.VARBINARY);
+		else statement.setString(index, this.value);
 		statement.setString(index+1, this.key);
 		return 2;
 	}
