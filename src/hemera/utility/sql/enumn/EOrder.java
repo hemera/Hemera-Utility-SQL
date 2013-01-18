@@ -15,7 +15,11 @@ public enum EOrder {
 	/**
 	 * The descending order.
 	 */
-	Descending("desc");
+	Descending("desc"),
+	/**
+	 * The random order.
+	 */
+	Random("rand()");
 	
 	/**
 	 * The <code>String</code> value of the relation

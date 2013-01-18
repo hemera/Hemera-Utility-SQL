@@ -105,6 +105,13 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 	}
 
 	/**
+	 * Set the results ordering to random.
+	 */
+	public final void setOrderingRandom() {
+		this.ordering = EOrder.Random;
+	}
+	
+	/**
 	 * Set the results ordering table-column and the
 	 * ordering method.
 	 * @param order The <code>EOrder</code> ordering
@@ -157,7 +164,9 @@ abstract class AbstractSelectQuery extends ConditionalQuery implements IResultsQ
 		final String conditions = this.buildConditionsTemplate();
 		builder.append(conditions);
 		// Order.
-		if (this.ordertable != null && this.ordercolumn != null && this.ordering != null) {
+		if (this.ordering == EOrder.Random) {
+			builder.append(" order by ").append(this.ordering.value);
+		} else if (this.ordertable != null && this.ordercolumn != null && this.ordering != null) {
 			builder.append(" order by ");
 			builder.append("`").append(this.ordertable).append("`.");
 			builder.append("`").append(this.ordercolumn).append("`");
