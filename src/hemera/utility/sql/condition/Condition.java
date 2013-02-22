@@ -227,7 +227,7 @@ public class Condition {
 	 * the column to test with.
 	 * @return This <code>Condition</code> instance.
 	 */
-	public Condition set(final String key, final String table, final String column, final ESign sign, final String value) {
+	public Condition setEncrypted(final String key, final String table, final String column, final ESign sign, final String value) {
 		this.value = new EncryptCondition(key, table, column, sign, value);
 		if (!this.tables.contains(table)) this.tables.add(table);
 		return this;

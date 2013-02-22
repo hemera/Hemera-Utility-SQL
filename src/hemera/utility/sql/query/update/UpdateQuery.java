@@ -120,14 +120,14 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	/**
 	 * Add the column-name value pair to be encrypted
 	 * with given key and set.
+	 * @param key The <code>String</code> encryption
+	 * key.
 	 * @param column The <code>String</code> column
 	 * name.
 	 * @param value The <code>String</code> value for
 	 * the column.
-	 * @param key The <code>String</code> encryption
-	 * key.
 	 */
-	public void addEncryptData(final String column, final String value, final String key) {
+	public void addEncryptData(final String key, final String column, final String value) {
 		this.data.add(new EncryptColumnValue(this.tablename, column, value, key));
 	}
 
