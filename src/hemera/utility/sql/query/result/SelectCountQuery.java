@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * conditions.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.0
+ * @version 1.0.6
  */
 public class SelectCountQuery extends AbstractSelectQuery {
 	
@@ -28,14 +28,14 @@ public class SelectCountQuery extends AbstractSelectQuery {
 	}
 	
 	/**
-	 * Retrieve the count integer value from of the
+	 * Retrieve the count long value from of the
 	 * result column specified.
-	 * @return The <code>int</code> value.
+	 * @return The <code>long</code> value.
 	 * @throws SQLException If result set access failed.
 	 */
-	public int getCountValue() throws SQLException {
+	public long getCountValue() throws SQLException {
 		if (this.resultset == null) return 0;
-		else return this.resultset.getInt(1);
+		else return this.resultset.getLong(1);
 	}
 
 	@Override
