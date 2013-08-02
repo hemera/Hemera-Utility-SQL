@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * conditions.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.6
+ * @version 1.0.1
  */
 public class SelectCountQuery extends AbstractSelectQuery {
 	
