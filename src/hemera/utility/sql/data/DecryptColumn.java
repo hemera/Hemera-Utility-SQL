@@ -6,9 +6,9 @@ package hemera.utility.sql.data;
  * be decrypted.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.0
+ * @version 1.0.2
  */
-public class DecryptColumn extends TableColumn {
+public class DecryptColumn extends ResultColumn {
 	/**
 	 * The <code>String</code> decryption key.
 	 */
@@ -20,11 +20,14 @@ public class DecryptColumn extends TableColumn {
 	 * the table.
 	 * @param column The <code>String</code> name of
 	 * the column.
+	 * @param distinct The <code>boolean</code>
+	 * indicating if the column selection should be
+	 * distinct.
 	 * @param key The <code>String</code> decryption
 	 * key.
 	 */
-	public DecryptColumn(final String table, final String column, final String key) {
-		super(table, column);
+	public DecryptColumn(final String table, final String column, final boolean distinct, final String key) {
+		super(table, column, distinct);
 		this.key = key;
 	}
 }

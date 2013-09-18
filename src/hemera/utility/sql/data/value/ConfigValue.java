@@ -25,7 +25,7 @@ import hemera.utility.sql.util.cache.CacheConfig;
  * transparency is guaranteed.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.0
+ * @version 1.0.2
  */
 public class ConfigValue {
 	/**
@@ -46,7 +46,7 @@ public class ConfigValue {
 	 * The <code>String</code> configuration table
 	 * value column name.
 	 */
-	private final String valuecol;
+	private final String valueCol;
 	/**
 	 * The <code>String</code> key column for the
 	 * configuration value.
@@ -79,7 +79,7 @@ public class ConfigValue {
 		this.sourceKey = sourceKey;
 		this.table = table;
 		this.keycol = keycol;
-		this.valuecol = valuecol;
+		this.valueCol = valuecol;
 		this.key = key;
 		this.dataref = new AtomicReference<Object>(null);
 		this.lastUpdateTime = Long.MIN_VALUE;
@@ -143,7 +143,7 @@ public class ConfigValue {
 			try {
 				final ResultSet result = query.execute();
 				if (result == null) return -1;
-				final int retrieved = result.getInt(this.valuecol);
+				final int retrieved = result.getInt(this.valueCol);
 				return (Integer)this.tryCache(retrieved);
 			} finally {
 				query.close();
@@ -166,7 +166,7 @@ public class ConfigValue {
 			try {
 				final ResultSet result = query.execute();
 				if (result == null) return -1;
-				final Long retrieved = result.getLong(this.valuecol);
+				final Long retrieved = result.getLong(this.valueCol);
 				return (Long)this.tryCache(retrieved);
 			} finally {
 				query.close();
@@ -199,7 +199,7 @@ public class ConfigValue {
 			try {
 				final ResultSet result = query.execute();
 				if (result == null) return -1;
-				final Float retrieved = result.getFloat(this.valuecol);
+				final Float retrieved = result.getFloat(this.valueCol);
 				return (Float)this.tryCache(retrieved);
 			} finally {
 				query.close();
@@ -222,7 +222,7 @@ public class ConfigValue {
 			try {
 				final ResultSet result = query.execute();
 				if (result == null) return null;
-				final String retrieved = result.getString(this.valuecol);
+				final String retrieved = result.getString(this.valueCol);
 				return (String)this.tryCache(retrieved);
 			} finally {
 				query.close();
@@ -245,7 +245,7 @@ public class ConfigValue {
 			try {
 				final ResultSet result = query.execute();
 				if (result == null) return -1;
-				final Double retrieved = result.getDouble(this.valuecol);
+				final Double retrieved = result.getDouble(this.valueCol);
 				return (Double)this.tryCache(retrieved);
 			} finally {
 				query.close();
@@ -268,7 +268,7 @@ public class ConfigValue {
 			try {
 				final ResultSet result = query.execute();
 				if (result == null) return false;
-				final Boolean retrieved = result.getBoolean(this.valuecol);
+				final Boolean retrieved = result.getBoolean(this.valueCol);
 				return (Boolean)this.tryCache(retrieved);
 			} finally {
 				query.close();
@@ -285,7 +285,7 @@ public class ConfigValue {
 	 */
 	private SelectQuery newSelectQuery() {
 		final SelectQuery query = new SelectQuery(this.sourceKey);
-		query.addResultColumn(this.table, this.valuecol);
+		query.addResultColumn(this.table, this.valueCol, false);
 		query.addCondition(new Condition().set(this.table, this.keycol, ESign.Equal, this.key));
 		return query;
 	}
