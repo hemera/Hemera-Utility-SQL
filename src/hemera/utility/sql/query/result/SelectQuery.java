@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hemera.utility.sql.data.DecryptColumn;
-import hemera.utility.sql.data.ResultColumn;
+import hemera.utility.sql.data.TableColumn;
 import hemera.utility.sql.interfaces.IResultsQuery;
 
 /**
@@ -21,14 +21,14 @@ import hemera.utility.sql.interfaces.IResultsQuery;
  */
 public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 	/**
-	 * The <code>List</code> of <code>ResultColumn</code>
+	 * The <code>List</code> of <code>TableColumn</code>
 	 * this select query is retrieving as results.
 	 * <p>
 	 * Must use a list to guarantee ordering so the
 	 * query template is the same for different values
 	 * allowing the statement to be reused.
 	 */
-	private final List<ResultColumn> resultcolumns;
+	private final List<TableColumn> resultColumns;
 
 	/**
 	 * Constructor of <code>SelectQuery</code>.
@@ -37,7 +37,7 @@ public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 	 */
 	public SelectQuery(final String key) {
 		super(key);
-		this.resultcolumns = new ArrayList<ResultColumn>();
+		this.resultColumns = new ArrayList<TableColumn>();
 	}
 
 	/**
@@ -47,14 +47,11 @@ public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 	 * the table the column belongs.
 	 * @param column The <code>String</code> name of
 	 * the result column.
-	 * @param distinct The <code>boolean</code>
-	 * indicating if the column selection should be
-	 * distinct.
 	 */
-	public void addResultColumn(final String table, final String column, final boolean distinct) {
-		final ResultColumn resultColumn = new ResultColumn(table, column, distinct);
-		if (!this.resultcolumns.contains(resultColumn)) {
-			this.resultcolumns.add(resultColumn);
+	public void addResultColumn(final String table, final String column) {
+		final TableColumn resultColumn = new TableColumn(table, column);
+		if (!this.resultColumns.contains(resultColumn)) {
+			this.resultColumns.add(resultColumn);
 		}
 		if (!this.tables.contains(table)) {
 			this.tables.add(table);
@@ -68,16 +65,13 @@ public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 	 * the table the column belongs.
 	 * @param column The <code>String</code> name of
 	 * the result column.
-	 * @param distinct The <code>boolean</code>
-	 * indicating if the column selection should be
-	 * distinct.
 	 * @param key The <code>String</code> key used to
 	 * descrypt the data.
 	 */
-	public void addDecryptColumn(final String table, final String column, final boolean distinct, final String key) {
-		final DecryptColumn decryptColumn = new DecryptColumn(table, column, distinct, key);
-		if (!this.resultcolumns.contains(decryptColumn)) {
-			this.resultcolumns.add(decryptColumn);
+	public void addDecryptColumn(final String table, final String column, final String key) {
+		final DecryptColumn decryptColumn = new DecryptColumn(table, column, key);
+		if (!this.resultColumns.contains(decryptColumn)) {
+			this.resultColumns.add(decryptColumn);
 		}
 		if (!this.tables.contains(table)) {
 			this.tables.add(table);
@@ -88,13 +82,10 @@ public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 	protected String buildResultTemplate() {
 		// Result columns.
 		final StringBuilder builder = new StringBuilder();
-		final int size = this.resultcolumns.size();
+		final int size = this.resultColumns.size();
 		final int last = size - 1;
 		for (int i = 0; i < size; i++) {
-			final ResultColumn col = this.resultcolumns.get(i);
-			if (col.distinct) {
-				builder.append("distinct ");
-			}
+			final TableColumn col = this.resultColumns.get(i);
 			if (col instanceof DecryptColumn) {
 				builder.append("AES_DECRYPT(");
 				builder.append("`").append(col.table).append("`.");
@@ -111,10 +102,10 @@ public class SelectQuery extends AbstractSelectQuery implements IResultsQuery {
 
 	@Override
 	protected int insertResultValues(final PreparedStatement statement) throws SQLException {
-		final int size = this.resultcolumns.size();
+		final int size = this.resultColumns.size();
 		int count = 1;
 		for (int i = 0; i < size; i++) {
-			final ResultColumn column = this.resultcolumns.get(i);
+			final TableColumn column = this.resultColumns.get(i);
 			if (column instanceof DecryptColumn) {
 				statement.setString(count++, ((DecryptColumn)column).key);
 			}

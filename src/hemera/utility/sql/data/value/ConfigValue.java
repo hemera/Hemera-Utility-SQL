@@ -285,7 +285,7 @@ public class ConfigValue {
 	 */
 	private SelectQuery newSelectQuery() {
 		final SelectQuery query = new SelectQuery(this.sourceKey);
-		query.addResultColumn(this.table, this.valueCol, false);
+		query.addResultColumn(this.table, this.valueCol);
 		query.addCondition(new Condition().set(this.table, this.keycol, ESign.Equal, this.key));
 		return query;
 	}
