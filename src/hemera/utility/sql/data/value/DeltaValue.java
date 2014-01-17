@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * the column.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.0
+ * @version 1.0.3
  */
 public final class DeltaValue extends ColumnValue {
 	/**
@@ -31,7 +31,10 @@ public final class DeltaValue extends ColumnValue {
 	}
 
 	@Override
-	public int insertValue(final int index, final PreparedStatement statement) throws SQLException {
+	public void insertValue(final int index, final int statementColumsCount, final PreparedStatement statement) throws SQLException {}
+	
+	@Override
+	public int getValuesCount() {
 		return 0;
 	}
 }

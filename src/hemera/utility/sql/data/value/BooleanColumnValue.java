@@ -8,13 +8,13 @@ import java.sql.SQLException;
  * data structure that holds a boolean value.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.0
+ * @version 1.0.3
  */
 public final class BooleanColumnValue extends ColumnValue {
 	/**
-	 * The <code>boolean</code> value.
+	 * The <code>boolean</code> array values.
 	 */
-	private final boolean value;
+	private final boolean[] values;
 	
 	/**
 	 * Constructor of <code>BooleanColumnValue</code>.
@@ -26,12 +26,33 @@ public final class BooleanColumnValue extends ColumnValue {
 	 */
 	public BooleanColumnValue(final String table, final String column, final boolean value) {
 		super(table, column);
-		this.value = value;
+		this.values = new boolean[] {value};
+	}
+	
+	/**
+	 * Constructor of <code>BooleanColumnValue</code>.
+	 * @param table The <code>String</code> name of
+	 * the table.
+	 * @param column The <code>String</code> name of
+	 * the column.
+	 * @param values The <code>boolean</code> array
+	 * values.
+	 */
+	public BooleanColumnValue(final String table, final String column, final boolean[] values) {
+		super(table, column);
+		this.values = values;
 	}
 
 	@Override
-	public int insertValue(final int index, final PreparedStatement statement) throws SQLException {
-		statement.setBoolean(index, this.value);
-		return 1;
+	public void insertValue(int index, final int statementColumsCount, final PreparedStatement statement) throws SQLException {
+		for (int i = 0; i < this.values.length; i++) {
+			statement.setBoolean(index, this.values[i]);
+			index += statementColumsCount;
+		}
+	}
+
+	@Override
+	public int getValuesCount() {
+		return this.values.length;
 	}
 }

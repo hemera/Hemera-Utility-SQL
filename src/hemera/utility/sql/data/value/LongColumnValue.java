@@ -8,13 +8,13 @@ import java.sql.SQLException;
  * data structure that holds a long value.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.0
+ * @version 1.0.3
  */
 public final class LongColumnValue extends ColumnValue {
 	/**
-	 * The <code>long</code> value.
+	 * The <code>long</code> array values.
 	 */
-	private final long value;
+	private final long[] values;
 	
 	/**
 	 * Constructor of <code>LongColumnValue</code>.
@@ -26,12 +26,33 @@ public final class LongColumnValue extends ColumnValue {
 	 */
 	public LongColumnValue(final String table, final String column, final long value) {
 		super(table, column);
-		this.value = value;
+		this.values = new long[] {value};
+	}
+	
+	/**
+	 * Constructor of <code>LongColumnValue</code>.
+	 * @param table The <code>String</code> name of
+	 * the table.
+	 * @param column The <code>String</code> name of
+	 * the column.
+	 * @param values The <code>long</code> array
+	 * values.
+	 */
+	public LongColumnValue(final String table, final String column, final long[] values) {
+		super(table, column);
+		this.values = values;
 	}
 
 	@Override
-	public int insertValue(final int index, final PreparedStatement statement) throws SQLException {
-		statement.setLong(index, this.value);
-		return 1;
+	public void insertValue(int index, final int statementColumsCount, final PreparedStatement statement) throws SQLException {
+		for (int i = 0; i < this.values.length; i++) {
+			statement.setLong(index, this.values[i]);
+			index += statementColumsCount;
+		}
+	}
+	
+	@Override
+	public int getValuesCount() {
+		return this.values.length;
 	}
 }

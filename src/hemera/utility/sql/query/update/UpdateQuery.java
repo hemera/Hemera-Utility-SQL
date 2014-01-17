@@ -25,7 +25,7 @@ import hemera.utility.sql.util.QueryExecutor;
  * name.
  *
  * @author Yi Wang (Neakor)
- * @version 1.0.0
+ * @version 1.0.3
  */
 public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	/**
@@ -34,7 +34,7 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 	 */
 	private final String tablename;
 	/**
-	 * The <code>List</code> of <code>DataPair</code>.
+	 * The <code>List</code> of <code>ColumnValue</code>.
 	 */
 	private final List<ColumnValue> data;
 	
@@ -191,8 +191,12 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 		int index = 1;
 		for (int i = 0; i < size; i++) {
 			final ColumnValue data = this.data.get(i);
-			final int count = data.insertValue(index, statement);
-			index += count;
+			data.insertValue(index, 1, statement);
+			if (data instanceof EncryptColumnValue) {
+				index += 2;
+			} else {
+				index++;
+			}
 		}
 		return index;
 	}
