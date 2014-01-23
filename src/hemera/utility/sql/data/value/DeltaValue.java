@@ -37,4 +37,9 @@ public final class DeltaValue extends ColumnValue {
 	public int getValuesCount() {
 		return 0;
 	}
+	
+	@Override
+	public int getInsertCountPerValue() {
+		return 0;
+	}
 }

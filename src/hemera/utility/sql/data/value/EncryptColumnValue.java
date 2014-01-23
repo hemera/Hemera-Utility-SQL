@@ -62,4 +62,9 @@ public final class EncryptColumnValue extends StringColumnValue {
 			index += statementColumsCount;
 		}
 	}
+	
+	@Override
+	public int getInsertCountPerValue() {
+		return 2;
+	}
 }

@@ -61,4 +61,9 @@ public class StringColumnValue extends ColumnValue {
 	public int getValuesCount() {
 		return this.values.length;
 	}
+	
+	@Override
+	public int getInsertCountPerValue() {
+		return 1;
+	}
 }

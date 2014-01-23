@@ -192,11 +192,7 @@ public class UpdateQuery extends ConditionalQuery implements IModifyQuery {
 		for (int i = 0; i < size; i++) {
 			final ColumnValue data = this.data.get(i);
 			data.insertValue(index, 1, statement);
-			if (data instanceof EncryptColumnValue) {
-				index += 2;
-			} else {
-				index++;
-			}
+			index += data.getInsertCountPerValue();
 		}
 		return index;
 	}

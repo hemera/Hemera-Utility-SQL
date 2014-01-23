@@ -268,11 +268,7 @@ public class InsertQuery extends AbstractQuery implements IModifyQuery {
 		for (int i = 0; i < size; i++) {
 			final ColumnValue data = this.data.get(i);
 			data.insertValue(index, stateColumnsCount, statement);
-			if (data instanceof EncryptColumnValue) {
-				index += 2;
-			} else {
-				index++;
-			}
+			index += data.getInsertCountPerValue();
 		}
 	}
 	
@@ -286,11 +282,7 @@ public class InsertQuery extends AbstractQuery implements IModifyQuery {
 		final int size = this.data.size();
 		for (int i = 0; i < size; i++) {
 			final ColumnValue data = this.data.get(i);
-			if (data instanceof EncryptColumnValue) {
-				count += 2;
-			} else {
-				count++;
-			}
+			count += data.getInsertCountPerValue();
 		}
 		return count;
 	}

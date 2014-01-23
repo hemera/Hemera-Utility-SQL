@@ -44,4 +44,12 @@ public abstract class ColumnValue extends TableColumn {
 	 * @return The <code>int</code> number of values.
 	 */
 	public abstract int getValuesCount();
+	
+	/**
+	 * Retrieve the number of values this instance will
+	 * insert per value.
+	 * @return The <code>int</code> number of inserts
+	 * per value.
+	 */
+	public abstract int getInsertCountPerValue();
 }
